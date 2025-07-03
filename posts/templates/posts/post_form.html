@@ -1,14 +1,126 @@
 {% extends "posts/post_base.html" %}
-
-{% load bootstrap4 %}
+{% load static %} {# Ensure static is loaded if you use any static assets for previews etc. #}
 
 {% block post_content %}
-<h4>Create New Post</h4>
-<form method="POST" action="{% url 'posts:create' %}" id="postForm">
-	{% csrf_token %}
-	{% bootstrap_form form %}
-	{% buttons %}
-		<button type="submit" class="btn btn-primary btn-large">Post</button>
-	{% endbuttons %}
-</form>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h4 class="mb-3">Share Your Observation</h4>
+      <form method="POST" enctype="multipart/form-data" id="postForm">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="mb-3">
+          <label for="{{ form.post_type.id_for_label }}" class="form-label">{{ form.post_type.label }}</label>
+          {{ form.post_type }}
+          {% if form.post_type.help_text %}<small class="form-text text-muted">{{ form.post_type.help_text }}</small>{% endif %}
+          {% for error in form.post_type.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="{{ form.message.id_for_label }}" class="form-label">{{ form.message.label }}</label>
+          {{ form.message }}
+          {% if form.message.help_text %}<small class="form-text text-muted">{{ form.message.help_text }}</small>{% endif %}
+          {% for error in form.message.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="{{ form.group.id_for_label }}" class="form-label">{{ form.group.label }} (Optional)</label>
+          {{ form.group }}
+          {% if form.group.help_text %}<small class="form-text text-muted">{{ form.group.help_text }}</small>{% endif %}
+          {% for error in form.group.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="{{ form.image.id_for_label }}" class="form-label">{{ form.image.label }} (Optional)</label>
+          {{ form.image }}
+          {% if form.image.help_text %}<small class="form-text text-muted">{{ form.image.help_text }}</small>{% endif %}
+          {% for error in form.image.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+          <!-- Basic image preview -->
+          <img id="imagePreview" src="#" alt="Image Preview" class="img-fluid mt-2" style="display: none; max-height: 300px;"/>
+        </div>
+
+        <h5 class="mt-4 mb-3">Observation Details (Optional)</h5>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="{{ form.observation_date.id_for_label }}" class="form-label">{{ form.observation_date.label }}</label>
+            {{ form.observation_date }}
+            {% if form.observation_date.help_text %}<small class="form-text text-muted">{{ form.observation_date.help_text }}</small>{% endif %}
+            {% for error in form.observation_date.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="{{ form.location_description.id_for_label }}" class="form-label">{{ form.location_description.label }}</label>
+            {{ form.location_description }}
+            {% if form.location_description.help_text %}<small class="form-text text-muted">{{ form.location_description.help_text }}</small>{% endif %}
+            {% for error in form.location_description.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="{{ form.equipment_used.id_for_label }}" class="form-label">{{ form.equipment_used.label }}</label>
+          {{ form.equipment_used }}
+          {% if form.equipment_used.help_text %}<small class="form-text text-muted">{{ form.equipment_used.help_text }}</small>{% endif %}
+          {% for error in form.equipment_used.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-info btn-lg mt-3"><i class="fas fa-paper-plane me-2"></i>Submit Observation</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('{{ form.image.id_for_label }}');
+    const imagePreview = document.getElementById('imagePreview');
+
+    if (imageInput) {
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.src = '#';
+                imagePreview.style.display = 'none';
+            }
+        });
+    }
+
+    // Apply Bootstrap 5 classes to form elements dynamically
+    // This is an alternative to using a widget in forms.py for every field or a third-party app
+    document.querySelectorAll('#postForm select, #postForm input[type="text"], #postForm input[type="file"], #postForm input[type="date"], #postForm textarea').forEach(function(el) {
+        if (!el.classList.contains('form-control-plaintext')) { // Don't style plaintext fields if any
+             if (el.type === 'file') {
+                el.classList.add('form-control'); // BS5 default styling for file inputs
+            } else {
+                el.classList.add('form-control');
+            }
+        }
+    });
+    document.querySelectorAll('#postForm input[type="checkbox"], #postForm input[type="radio"]').forEach(function(el){
+        el.classList.add('form-check-input');
+    });
+    // For select multiple, add form-select class
+    document.querySelectorAll('#postForm select[multiple]').forEach(function(el){
+        el.classList.add('form-select');
+    });
+     // For single select, also add form-select
+    document.querySelectorAll('#postForm select:not([multiple])').forEach(function(el){
+        el.classList.add('form-select');
+    });
+
+});
+</script>
 {% endblock %}

@@ -1,9 +1,9 @@
 {% extends "posts/post_base.html" %}
 
-{% block prepost %}
+{% block pre_post_content %} {# Corrected block name for consistency #}
 <div class="col-md-4">
-	<h1>@{{ post_user.username }}</h1>
-	<p>Post History</p>
+	<h1><i class="fas fa-user-astronaut me-2"></i>@{{ post_user.username }}</h1>
+	<p class="lead text-muted">Observation Log</p>
 </div>
 {% endblock %}
 

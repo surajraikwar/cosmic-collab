@@ -1,11 +1,31 @@
+/* Base body styles */
 body {
   margin: 0;
-  overflow: hidden;
+  padding: 0;
   background-color: black;
-  color:white;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content container */
+.mycontent {
+  flex: 1;
+  padding-top: 100px; /* Space for fixed navbar */
+  padding-bottom: 2rem;
+  width: 100%;
+  overflow-y: auto; /* Enable scrolling for content */
 }
 .navbar {
   min-height: 100px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+  background-color: black;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .navbar-brand {

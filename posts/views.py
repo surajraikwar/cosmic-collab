@@ -50,15 +50,24 @@ class PostDetail(SelectRelatedMixin, generic.DetailView):
 
 
 class CreatePost(LoginRequiredMixin, SelectRelatedMixin, generic.CreateView):
-    fields = ('message','group')
+    form_class = forms.PostForm # Use the custom form
     model = models.Post
+    # template_name = "posts/post_form.html" # Already default
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"user": self.request.user})
+        return kwargs
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
+        # Image is handled by ModelForm when request.FILES is passed to form instance
         self.object.save()
+        messages.success(self.request, "Post Created Successfully!")
         return super().form_valid(form)
 
+    # The CreateView's post method handles passing request.POST and request.FILES to the form.
 
 class DeletePost(LoginRequiredMixin, SelectRelatedMixin, generic.DeleteView):
     model = models.Post
