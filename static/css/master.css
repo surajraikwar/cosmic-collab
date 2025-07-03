@@ -1,5 +1,5 @@
 .mycontent{
-  padding-top: 6rem; /* Adjust as needed for fixed navbar. (approx 96px if 1rem=16px) */
+  padding-top: 6.5rem; /* Increased padding to prevent overlap with fixed navbar */
  /* border: 10px solid red; */ /* Removed this border */
 }
 
