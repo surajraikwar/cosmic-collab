@@ -1,20 +1,49 @@
 .mycontent{
-  padding-top: 100px;
- border: 10px solid red;
+  padding-top: 6rem; /* Adjust as needed for fixed navbar. (approx 96px if 1rem=16px) */
+ /* border: 10px solid red; */ /* Removed this border */
 }
-html,
+
+/* Apply dark theme from Bootstrap variables or custom values */
 body {
+  background-color: var(--bs-dark); /* Using Bootstrap's dark variable */
+  color: var(--bs-light); /* Using Bootstrap's light variable for text */
+  font-family: 'Montserrat', sans-serif; /* Ensure Montserrat is default */
+}
+
+/* Override Bootstrap's default link color for better visibility on dark theme */
+a {
+  color: var(--bs-info); /* A lighter blue, good for dark themes */
+}
+
+a:hover {
+  color: var(--bs-primary);
+}
+
+/* Specific styling for the old canvas animation if we keep it */
+html.canvas-page, /* Add a class to html tag on pages with canvas */
+body.canvas-page {
   height: 100%;
   width: 100%;
-  overflow: hidden;
-  background: #191063;
+  overflow: hidden; /* This was causing scroll issues, manage carefully */
   margin: 0;
+  /* background: #000; */ /* Let body bg-dark handle this, or set a specific canvas page bg */
+}
+
+#canvas {
+  display: block; /* Ensure it's a block element */
+  position: fixed; /* Fixed position to cover the background */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* Place it behind other content */
+  /* background: #000; */ /* Example background for canvas area if needed */
 }
 
 
-#note {
-  position: absolute;
-  color: rgba(249,241,204,1);
+#note { /* This was for the old firefly animation's text */
+  position: fixed; /* Changed to fixed to stay in viewport with canvas */
+  color: rgba(249, 241, 204, 0.7); /* Slightly more transparent */
   left: 0;
   right: 0;
   bottom: 20px;
@@ -22,4 +51,28 @@ body {
   text-align: center;
   user-select: none;
   font-family: Arial;
+}
+
+/* Custom utility classes */
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Homepage specific styles */
+.homepage-header {
+  padding-top: 15vh; /* Adjust as needed for vertical centering */
+  position: relative;
+  z-index: 1; /* Ensure content is above potential background canvas */
+}
+
+.homepage-header h1 {
+  color: #ffffff; /* Explicitly white for homepage title */
+}
+
+.homepage-header .lead {
+ color: #e0e0e0; /* Lighter gray for lead paragraph */
+}
+
+.homepage-header .fs-5 { /* The sub-paragraph, if targeting specifically */
+  color: #c0c0c0; /* Slightly darker gray */
 }

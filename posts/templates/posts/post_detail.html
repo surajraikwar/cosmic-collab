@@ -1,7 +1,73 @@
 {% extends "posts/post_base.html" %}
+{% load humanize %}
 
 {% block post_content %}
-<!-- <div class="col-md-8"> -->
-    {% include "posts/_post.html" %}
-<!-- </div> -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8"> {# Wider column for detail view #}
+            <div class="card shadow-sm post-detail-card">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="img-fluid rounded-top" alt="{{ post.message|truncatewords:10 }}" style="max-height: 600px; object-fit: cover; width: 100%;">
+                {% endif %}
+
+                <div class="card-header bg-transparent border-bottom-0 pt-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h3 class="card-title mb-0">{{ post.message|truncatewords:30|capfirst }}</h3>
+                            <p class="card-text text-muted small mb-1">
+                                <i class="fas fa-user me-1"></i>Posted by <a href="{% url 'posts:for_user' username=post.user.username %}" class="text-decoration-none">@{{ post.user.username }}</a>
+                                <span title="{{ post.created_at }}"><i class="fas fa-clock ms-2 me-1"></i>{{ post.created_at|naturaltime }}</span>
+                                {% if post.group %}
+                                    in <a href="{{ post.group.get_absolute_url }}" class="text-decoration-none"><i class="fas fa-users ms-2 me-1"></i>{{ post.group.name }}</a>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <span class="badge bg-info fs-6">{{ post.get_post_type_display }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h4 class="card-subtitle mb-3 text-muted" style="font-family: 'Orbitron', sans-serif;">Observation Details:</h4>
+                    <ul class="list-group list-group-flush mb-3">
+                        {% if post.observation_date %}
+                            <li class="list-group-item"><i class="fas fa-calendar-alt fa-fw me-2 text-info"></i><strong>Observation Date:</strong> {{ post.observation_date|date:"F d, Y" }}</li>
+                        {% endif %}
+                        {% if post.location_description %}
+                            <li class="list-group-item"><i class="fas fa-map-marker-alt fa-fw me-2 text-info"></i><strong>Location:</strong> {{ post.location_description }}</li>
+                        {% endif %}
+                        {% if post.equipment_used %}
+                            <li class="list-group-item"><i class="fas fa-camera-retro fa-fw me-2 text-info"></i><strong>Equipment:</strong> {{ post.equipment_used|linebreaksbr }}</li>
+                        {% endif %}
+                         <li class="list-group-item"><i class="fas fa-edit fa-fw me-2 text-info"></i><strong>Description:</strong></li>
+                    </ul>
+
+                    <div class="post-message-content ps-2">
+                        {{ post.message_html|safe }}
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent border-top-0 pb-3">
+                    <div class="d-flex justify-content-end align-items-center">
+                        {# Add like/comment/share buttons here later #}
+                        {% if user.is_authenticated and post.user == user %}
+                            <a href="{% url 'posts:delete' pk=post.pk %}" title="Delete this post" class="btn btn-danger me-2">
+                                <i class="fas fa-trash-can me-1"></i>Delete
+                            </a>
+                            {# Add Edit Button Here Later #}
+                            {# <a href="#" class="btn btn-outline-secondary"><i class="fas fa-edit me-1"></i>Edit</a> #}
+                        {% endif %}
+                    </div>
+                     <hr>
+                    <a href="{% url 'posts:all' %}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Back to Observations</a>
+                    {% if post.group %}
+                         <a href="{{post.group.get_absolute_url}}" class="btn btn-outline-secondary"><i class="fas fa-users me-1"></i>Back to {{post.group.name}}</a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Profile Sidebar/Header -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm profile-sidebar">
+                <div class="card-body text-center">
+                    {# Placeholder for Avatar - Future Enhancement #}
+                    <i class="fas fa-user-astronaut fa-7x text-info mb-3"></i>
+
+                    <h3 class="card-title" style="font-family: 'Orbitron', sans-serif;">@{{ profile_user.username }}</h3>
+                    <p class="text-muted">Joined: {{ profile_user.date_joined|date:"M d, Y" }}</p>
+
+                    {% if user.is_authenticated and user.username == profile_user.username %}
+                    <a href="#" class="btn btn-outline-secondary btn-sm mb-3 disabled">Edit Profile (Coming Soon)</a>
+                    {% endif %}
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-light">
+                        Observations
+                        <span class="badge bg-info rounded-pill">{{ post_count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-light">
+                        Groups Joined
+                        <span class="badge bg-info rounded-pill">{{ group_count }}</span>
+                    </li>
+                    {# Add more stats if needed #}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="col-md-8">
+            {% if astrophotos %}
+            <div class="profile-section mb-4">
+                <h4 class="mb-3" style="font-family: 'Orbitron', sans-serif;"><i class="fas fa-camera-retro text-info me-2"></i>Astrophotography Gallery</h4>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
+                    {% for photo_post in astrophotos %}
+                    <div class="col">
+                        <div class="card shadow-sm gallery-card bg-dark">
+                             <a href="{{ photo_post.get_absolute_url }}">
+                                <img src="{{ photo_post.image.url }}" class="card-img-top" alt="{{ photo_post.message|truncatewords:5 }}" style="aspect-ratio: 1 / 1; object-fit: cover;">
+                            </a>
+                            <div class="card-body py-2 px-2 text-center" style="background-color: rgba(0,0,0,0.3);">
+                                <small class="text-light fst-italic">{{ photo_post.message|truncatewords:10 }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="profile-section">
+                <h4 class="mb-3" style="font-family: 'Orbitron', sans-serif;"><i class="fas fa-list-alt text-info me-2"></i>All Observations by @{{ profile_user.username }}</h4>
+                {% if user_posts %}
+                    {% for post_item in user_posts %}
+                        {% include "posts/_post.html" with post=post_item hide_delete=True %} {# Pass post_item as post to _post.html #}
+                    {% endfor %}
+                {% else %}
+                <div class="alert alert-secondary text-center">
+                    <i class="far fa-comment-dots fa-2x mb-2"></i><br>
+                    @{{ profile_user.username }} hasn't made any observations yet.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

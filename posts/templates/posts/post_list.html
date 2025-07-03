@@ -4,31 +4,33 @@
 {% block pre_post_content %}
 <div class="col-md-4">
 	{% if request.user.is_authenticated %}
-	<div class="card card-with-shadow">
-		<div class="content">
-			<h5 class="title">Your Groups</h5>
-			<ul class="list-unstyled">
-
+	<div class="card shadow-sm mb-3">
+		<div class="card-body">
+			<h5 class="card-title"><i class="fas fa-users me-2"></i>Your Groups</h5>
+			{% if get_user_groups %}
+			<div class="list-group list-group-flush">
 				{% for member_group in get_user_groups %}
-				<li class="group li-with-bullet">
-					<a href="{% url 'groups:single' slug=member_group.group.slug %}">{{ member_group.group.name }}</a>
-				</li>
+				<a href="{% url 'groups:single' slug=member_group.group.slug %}" class="list-group-item list-group-item-action bg-transparent text-light">{{ member_group.group.name }}</a>
 				{% endfor %}
-
-			</ul>
+			</div>
+			{% else %}
+			<p class="card-text text-muted">You haven't joined any groups yet.</p>
+			{% endif %}
 		</div>
 	</div>
 	{% endif %}
-	<div class="card card-with-shadow">
-		<div class="content">
-			<h5 class="title">All groups</h5>
-			<ul class="list-unstyled">
-				{# {% get_other_groups as other_groups %} #}
+	<div class="card shadow-sm">
+		<div class="card-body">
+			<h5 class="card-title"><i class="fas fa-globe-americas me-2"></i>All Groups</h5>
+			{% if get_other_groups %}
+			<div class="list-group list-group-flush">
 				{% for other_group in get_other_groups %}
-					<li class="group li-with-bullet"><a href="{% url 'groups:single' slug=other_group.slug %}">{{ other_group.name }}</a></li>
+				<a href="{% url 'groups:single' slug=other_group.slug %}" class="list-group-item list-group-item-action bg-transparent text-light">{{ other_group.name }}</a>
 				{% endfor %}
-			</ul>
-
+			</div>
+			{% else %}
+			<p class="card-text text-muted">No groups available.</p>
+			{% endif %}
 		</div>
 	</div>
 </div>

@@ -1,6 +1,39 @@
 {% extends "base.html" %}
-{% block content %}
+{% load static %}
 
-    <h1>Welcome to Star Social!</h1>
+{% block body_class %}{{ block.super }} canvas-page{% endblock body_class %} {# Inherit base classes and add canvas-page #}
+
+{% block content %}
+<div class="container text-center homepage-header"> {# Used class instead of inline style #}
+    <h1 class="display-3 fw-bold mb-3 font-orbitron">Welcome to Cosmic Collab</h1> {# Added font-orbitron class #}
+    <p class="lead fs-4 mb-4">
+        Your new hub for sharing astronomical observations, connecting with fellow stargazers,
+        and exploring the wonders of the universe together.
+    </p>
+    <p class="fs-5 mb-5">
+        Discover stunning astrophotography, log your own sightings, join interest groups,
+        and never miss a celestial event.
+    </p>
+    <div>
+        <a href="{% url 'posts:all' %}" class="btn btn-outline-info btn-lg me-3 px-4 py-2">
+            <i class="fas fa-binoculars me-2"></i>Explore Observations
+        </a>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'accounts:signup' %}" class="btn btn-info btn-lg px-4 py-2">
+            <i class="fas fa-user-plus me-2"></i>Join the Community
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{# Note related to canvas animation, if needed #}
+{# <div id="note">Firefly Animation Active</div> #}
 
 {% endblock %}
+
+{% block page_background_animation %}
+  <canvas id="canvas"></canvas>
+  <script src="{% static 'simplesocial/js/master.js' %}" type="text/javascript"></script>
+  {# Optionally, add the #note div here too if it's tied to the animation #}
+  {# <div id="note" style="z-index: -1;"></div> #}
+{% endblock page_background_animation %}
