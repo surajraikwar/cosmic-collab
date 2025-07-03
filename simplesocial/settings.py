@@ -20,9 +20,11 @@ TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 't&=eb=%y!h_w-nd#jzf**x7r6i3@*k7xapx5a5zhqy-mscsq1x'
+# In a production environment, SECRET_KEY should be set as an environment variable
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 't&=eb=%y!h_w-nd#jzf**x7r6i3@*k7xapx5a5zhqy-mscsq1x')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG should be False in a production environment
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -84,6 +86,8 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Password validation
